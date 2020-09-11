@@ -10,23 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f58cd453-a2f1-408b-8642-e5a8b398623a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/ELMDuino.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/Arduino_hardware_serial_test/Arduino_hardware_serial_test.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/Arduino_software_serial_test/Arduino_software_serial_test.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP32_Bluetooth_Serial/ESP32_Bluetooth_Serial.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP32_WiFi/ESP32_WiFi.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP32_dual_core/ESP32_dual_core.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP32_test/ESP32_test.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP8266_WiFi/ESP8266_WiFi.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/ESP8266_test/ESP8266_test.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/library.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ELMduino.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ELMduino.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/Arduino_hardware_serial_test/Arduino_hardware_serial_test.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/Arduino_hardware_serial_test/Arduino_hardware_serial_test.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/Arduino_software_serial_test/Arduino_software_serial_test.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/Arduino_software_serial_test/Arduino_software_serial_test.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP32_Bluetooth_Serial/ESP32_Bluetooth_Serial.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP32_Bluetooth_Serial/ESP32_Bluetooth_Serial.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP32_WiFi/ESP32_WiFi.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP32_WiFi/ESP32_WiFi.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP32_dual_core/ESP32_dual_core.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP32_dual_core/ESP32_dual_core.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP32_test/ESP32_test.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP32_test/ESP32_test.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP8266_WiFi/ESP8266_WiFi.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP8266_WiFi/ESP8266_WiFi.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ESP8266_test/ESP8266_test.ino" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ESP8266_test/ESP8266_test.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ELMduino.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ELMduino.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ELMduino.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ELMduino.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +44,12 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -68,18 +68,42 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1599832931942</updated>
-      <workItem from="1599832933068" duration="179000" />
+      <workItem from="1599832933068" duration="4278000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial Commit">
+      <created>1599833134151</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1599833134151</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="393" y="0" key="CommitChangelistDialog2" timestamp="1599833093252">
+    <state x="393" y="0" key="CommitChangelistDialog2" timestamp="1599833133541">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="393" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1599833093252" />
+    <state x="393" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1599833133541" />
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1599833372074">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1599833372074" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1599833136069">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1599833136069" />
+    <state x="13" y="-25" width="1516" height="873" maximized="true" key="dock-window-1" timestamp="1599838911070">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="13" y="-25" width="1516" height="873" maximized="true" key="dock-window-1/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1599838911070" />
     <state x="570" y="319" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1599833084773">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

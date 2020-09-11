@@ -1,8 +1,6 @@
 #include "ELMduino.h"
 
 
-
-
 /*
  bool ELM327::begin(Stream &stream, char protocol, uint16_t payloadLen)
 
@@ -24,25 +22,22 @@
   * bool - Whether or not the ELM327 was propperly
   initialized
 */
-bool ELM327::begin(Stream &stream, char protocol, uint16_t payloadLen)
-{
-	elm_port = &stream;
-	PAYLOAD_LEN = payloadLen;
+bool ELM327::begin(Stream &stream, char protocol, uint16_t payloadLen) {
+    elm_port = &stream;
+    PAYLOAD_LEN = payloadLen;
 
-	payload = (char*)malloc(PAYLOAD_LEN);
+    payload = (char *) malloc(PAYLOAD_LEN);
 
-	// test if serial port is connected
-	if (!elm_port)
-		return false;
+    // test if serial port is connected
+    if (!elm_port)
+        return false;
 
-	// try to connect
-	if (!initializeELM(protocol))
-		return false;
-  
-	return true;
+    // try to connect
+    if (!initializeELM(protocol))
+        return false;
+
+    return true;
 }
-
-
 
 
 /*
@@ -81,46 +76,41 @@ bool ELM327::begin(Stream &stream, char protocol, uint16_t payloadLen)
 
   * --> *user adjustable
 */
-bool ELM327::initializeELM(char protocol)
-{
-	char command[10] = { '\0' };
-	connected = false;
-	
-	sendCommand(RESET_ALL);
-        delay(100);
+bool ELM327::initializeELM(char protocol) {
+    char command[10] = {'\0'};
+    connected = false;
 
-	sendCommand(ECHO_OFF);
-	delay(100);
+    sendCommand(RESET_ALL);
+    delay(100);
 
-	sendCommand(PRINTING_SPACES_OFF);
-	delay(100);
-	
-	sendCommand(ALLOW_LONG_MESSAGES);
-	delay(100);
+    sendCommand(ECHO_OFF);
+    delay(100);
 
-	// Set protocol
-	sprintf(command, TRY_PROT_H_AUTO_SEARCH, protocol);
+    sendCommand(PRINTING_SPACES_OFF);
+    delay(100);
 
-	if (sendCommand(command) == ELM_SUCCESS)
-	{
-		if (strstr(payload, "OK") != NULL)
-		{
-			connected = true;
-			return connected;
-		}
-	}
-	
-	// Set protocol and save
-	sprintf(command, SET_PROTOCOL_TO_H_SAVE, protocol);
+    sendCommand(ALLOW_LONG_MESSAGES);
+    delay(100);
+
+    // Set protocol
+    sprintf(command, TRY_PROT_H_AUTO_SEARCH, protocol);
+
+    if (sendCommand(command) == ELM_SUCCESS) {
+        if (strstr(payload, "OK") != NULL) {
+            connected = true;
+            return connected;
+        }
+    }
+
+    // Set protocol and save
+    sprintf(command, SET_PROTOCOL_TO_H_SAVE, protocol);
 
     if (sendCommand(command) == ELM_SUCCESS)
         if (strstr(payload, "OK") != NULL)
             connected = true;
 
-	return connected;
+    return connected;
 }
-
-
 
 
 /*
@@ -139,38 +129,32 @@ bool ELM327::initializeELM(char protocol)
  -------
   * void
 */
-void ELM327::formatQueryArray(uint8_t service, uint16_t pid)
-{
-	query[0] = ((service >> 4) & 0xF) + '0';
-	query[1] = (service & 0xF) + '0';
+void ELM327::formatQueryArray(uint8_t service, uint16_t pid) {
+    query[0] = ((service >> 4) & 0xF) + '0';
+    query[1] = (service & 0xF) + '0';
 
-	// determine PID length (standard queries have 16-bit PIDs,
-	// but some custom queries have PIDs with 32-bit values)
-	if (pid & 0xFF00)
-	{
-		longQuery = true;
+    // determine PID length (standard queries have 16-bit PIDs,
+    // but some custom queries have PIDs with 32-bit values)
+    if (pid & 0xFF00) {
+        longQuery = true;
 
-		query[2] = ((pid >> 12) & 0xF) + '0';
-		query[3] = ((pid >> 8) & 0xF) + '0';
-		query[4] = ((pid >> 4) & 0xF) + '0';
-		query[5] = (pid & 0xF) + '0';
+        query[2] = ((pid >> 12) & 0xF) + '0';
+        query[3] = ((pid >> 8) & 0xF) + '0';
+        query[4] = ((pid >> 4) & 0xF) + '0';
+        query[5] = (pid & 0xF) + '0';
 
-		upper(query, 6);
-	}
-	else
-	{
-		longQuery = false;
+        upper(query, 6);
+    } else {
+        longQuery = false;
 
-		query[2] = ((pid >> 4) & 0xF) + '0';
-		query[3] = (pid & 0xF) + '0';
-		query[4] = '\0';
-		query[5] = '\0';
+        query[2] = ((pid >> 4) & 0xF) + '0';
+        query[3] = (pid & 0xF) + '0';
+        query[4] = '\0';
+        query[5] = '\0';
 
-		upper(query, 4);
-	}
+        upper(query, 4);
+    }
 }
-
-
 
 
 /*
@@ -190,18 +174,14 @@ void ELM327::formatQueryArray(uint8_t service, uint16_t pid)
  -------
   * void
 */
-void ELM327::upper(char string[], uint8_t buflen)
-{
-	for (uint8_t i = 0; i < buflen; i++)
-	{
-		if (string[i] > 'Z')
-			string[i] -= 32;
-		else if ((string[i] > '9') && (string[i] < 'A'))
-			string[i] += 7;
-	}
+void ELM327::upper(char string[], uint8_t buflen) {
+    for (uint8_t i = 0; i < buflen; i++) {
+        if (string[i] > 'Z')
+            string[i] -= 32;
+        else if ((string[i] > '9') && (string[i] < 'A'))
+            string[i] += 7;
+    }
 }
-
-
 
 
 /*
@@ -220,15 +200,12 @@ void ELM327::upper(char string[], uint8_t buflen)
  -------
   * bool - whether or not a time-out has occurred
 */
-bool ELM327::timeout()
-{
-	currentTime = millis();
-	if ((currentTime - previousTime) >= timeout_ms)
-		return true;
-	return false;
+bool ELM327::timeout() {
+    currentTime = millis();
+    if ((currentTime - previousTime) >= timeout_ms)
+        return true;
+    return false;
 }
-
-
 
 
 /*
@@ -246,15 +223,12 @@ bool ELM327::timeout()
  -------
   * uint8_t - int value of parameter "value"
 */
-uint8_t ELM327::ctoi(uint8_t value)
-{
-	if (value >= 'A')
-		return value - 'A' + 10;
-	else
-		return value - '0';
+uint8_t ELM327::ctoi(uint8_t value) {
+    if (value >= 'A')
+        return value - 'A' + 10;
+    else
+        return value - '0';
 }
-
-
 
 
 /*
@@ -284,32 +258,28 @@ uint8_t ELM327::ctoi(uint8_t value)
 */
 int8_t ELM327::nextIndex(char const *str,
                          char const *target,
-                         uint8_t numOccur=1)
-{
-	char const *p = str;
-	char const *r = str;
-	uint8_t count;
+                         uint8_t numOccur = 1) {
+    char const *p = str;
+    char const *r = str;
+    uint8_t count;
 
-	for (count = 0; ; ++count)
-	{
-		p = strstr(p, target);
+    for (count = 0;; ++count) {
+        p = strstr(p, target);
 
-		if (count == (numOccur - 1))
-			break;
+        if (count == (numOccur - 1))
+            break;
 
-		if (!p)
-			break;
+        if (!p)
+            break;
 
-		p++;
-	}
+        p++;
+    }
 
-	if (!p)
-		return -1;
+    if (!p)
+        return -1;
 
-	return p - r;
+    return p - r;
 }
-
-
 
 
 /*
@@ -327,13 +297,10 @@ int8_t ELM327::nextIndex(char const *str,
  -------
   * void
 */
-void ELM327::flushInputBuff()
-{
-	while (elm_port->available())
-		elm_port->read();
+void ELM327::flushInputBuff() {
+    while (elm_port->available())
+        elm_port->read();
 }
-
-
 
 
 /*
@@ -355,20 +322,16 @@ void ELM327::flushInputBuff()
   * bool - Whether or not the query was submitted successfully
 */
 bool ELM327::queryPID(uint8_t service,
-                      uint16_t pid)
-{
-	if (connected)
-	{
-		formatQueryArray(service, pid);
-		sendCommand(query);
+                      uint16_t pid) {
+    if (connected) {
+        formatQueryArray(service, pid);
+        sendCommand(query);
 
-		return true;
-	}
-	
-	return false;
+        return true;
+    }
+
+    return false;
 }
-
-
 
 
 /*
@@ -386,30 +349,28 @@ bool ELM327::queryPID(uint8_t service,
  -------
   * bool - Whether or not the query was submitted successfully
 */
-bool ELM327::queryPID(char queryStr[])
-{
-	if (connected)
-	{
-		if (strlen(queryStr) <= 4)
-			longQuery = false;
-		else
-			longQuery = true;
+bool ELM327::queryPID(char queryStr[]) {
+    if (connected) {
+        if (strlen(queryStr) <= 4)
+            longQuery = false;
+        else
+            longQuery = true;
 
-		sendCommand(queryStr);
+        sendCommand(queryStr);
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 
 /*
- int32_t ELM327::coolantTemp()
+ uint8_t ELM327::coolantTemp()
 
  Description:
  ------------
-  *  Queries and parses received message for/returns vehicle speed data (kph)
+  *  Queries and parses received message for/returns engine coolant temp (kph)
 
  Inputs:
  -------
@@ -417,14 +378,13 @@ bool ELM327::queryPID(char queryStr[])
 
  Return:
  -------
-  * int32_t - Vehicle speed in kph
+  * uint8_t - Engine Coolant temp
 */
-int32_t ELM327::coolantTemp()
-{
-	if (queryPID(SERVICE_01, THROTTLE_POSITION))
-		return (int32_t)findResponse();
+uint8_t ELM327::coolantTemp() {
+    if (queryPID(SERVICE_01, ENGINE_COOLANT_TEMP))
+        return (uint8_t) findResponse();
 
-	return ELM_GENERAL_ERROR;
+    return ELM_GENERAL_ERROR;
 }
 
 
@@ -443,15 +403,12 @@ int32_t ELM327::coolantTemp()
  -------
   * int32_t - Vehicle speed in kph
 */
-int32_t ELM327::kph()
-{
-	if (queryPID(SERVICE_01, VEHICLE_SPEED))
-		return (int32_t)findResponse();
+int32_t ELM327::kph() {
+    if (queryPID(SERVICE_01, VEHICLE_SPEED))
+        return (int32_t) findResponse();
 
-	return ELM_GENERAL_ERROR;
+    return ELM_GENERAL_ERROR;
 }
-
-
 
 
 /*
@@ -469,18 +426,14 @@ int32_t ELM327::kph()
  -------
   * float - Vehicle speed in mph
 */
-float ELM327::mph()
-{
-	float mph = kph();
+float ELM327::mph() {
+    float mph = kph();
 
-	if (status == ELM_SUCCESS)
-		return mph * KPH_MPH_CONVERT;
+    if (status == ELM_SUCCESS)
+        return mph * KPH_MPH_CONVERT;
 
-	return ELM_GENERAL_ERROR;
+    return ELM_GENERAL_ERROR;
 }
-
-
-
 
 
 /*
@@ -498,14 +451,91 @@ float ELM327::mph()
  -------
   * float - Vehicle RPM
 */
-float ELM327::rpm()
-{
-	if (queryPID(SERVICE_01, ENGINE_RPM))
-		return (findResponse() / 4.0);
+float ELM327::rpm() {
+    if (queryPID(SERVICE_01, ENGINE_RPM))
+        return (findResponse() / 4.0);
 
-	return ELM_GENERAL_ERROR;
+    return ELM_GENERAL_ERROR;
 }
 
+
+uint8_t ELM327::getFuelSystemStatus() {
+    if (queryPID(SERVICE_01, FUEL_SYSTEM_STATUS))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getEngineLoad() {
+    if (queryPID(SERVICE_01, FUEL_SYSTEM_STATUS))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+/*
+ uint8_t ELM327::getEngineCoolantTemp()
+
+ Description:
+ ------------
+  *  Queries and parses received message for/returns engine coolant temp (kph)
+
+ Inputs:
+ -------
+  * void
+
+ Return:
+ -------
+  * uint8_t - Engine Coolant temp
+*/
+uint8_t ELM327::coolantTemp() {
+    if (queryPID(SERVICE_01, ENGINE_COOLANT_TEMP))
+        return (uint8_t) findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getShortTermFuelTrimBank1() {
+    if (queryPID(SERVICE_01, SHORT_TERM_FUEL_TRIM_BANK_1))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getLongTermFuelTrimBank1() {
+    if (queryPID(SERVICE_01, LONG_TERM_FUEL_TRIM_BANK_1))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getShortTermFuelTrimBank1() {
+    if (queryPID(SERVICE_01, SHORT_TERM_FUEL_TRIM_BANK_2))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getLongTermFuelTrimBank1() {
+    if (queryPID(SERVICE_01, LONG_TERM_FUEL_TRIM_BANK_2))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getFuelPressure() {
+    if (queryPID(SERVICE_01, FUEL_PRESSURE))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
+
+uint8_t ELM327::getIntakeManifoldAbsPressure() {
+    if (queryPID(SERVICE_01, INTAKE_MANIFOLD_ABS_PRESSURE))
+        return (uint8_t)findResponse();
+
+    return ELM_GENERAL_ERROR;
+}
 
 
 
@@ -524,85 +554,75 @@ float ELM327::rpm()
  -------
   * int8_t - Response status
 */
-int8_t ELM327::sendCommand(const char *cmd)
-{
-	uint8_t counter = 0;
-	connected = false;
+int8_t ELM327::sendCommand(const char *cmd) {
+    uint8_t counter = 0;
+    connected = false;
 
-	for (byte i = 0; i < PAYLOAD_LEN; i++)
-		payload[i] = '\0';
+    for (byte i = 0; i < PAYLOAD_LEN; i++)
+        payload[i] = '\0';
 
-	// reset input buffer and number of received bytes
-	recBytes = 0;
-	flushInputBuff();
+    // reset input buffer and number of received bytes
+    recBytes = 0;
+    flushInputBuff();
 
-	elm_port->print(cmd);
-	elm_port->print('\r');
+    elm_port->print(cmd);
+    elm_port->print('\r');
 
-	// prime the timeout timer
-	previousTime = millis();
-	currentTime  = previousTime;
+    // prime the timeout timer
+    previousTime = millis();
+    currentTime = previousTime;
 
-	// buffer the response of the ELM327 until either the
-	// end marker is read or a timeout has occurred
-	while ((counter < (PAYLOAD_LEN + 1)) && !timeout())
-	{
-		if (elm_port->available())
-		{
-			char recChar = elm_port->read();
+    // buffer the response of the ELM327 until either the
+    // end marker is read or a timeout has occurred
+    while ((counter < (PAYLOAD_LEN + 1)) && !timeout()) {
+        if (elm_port->available()) {
+            char recChar = elm_port->read();
 
-			if (recChar == '>')
-				break;
-			else if (isspace(recChar))
-				continue;
-			
-			payload[counter] = recChar;
-			counter++;
-		}
-	}
+            if (recChar == '>')
+                break;
+            else if (isspace(recChar))
+                continue;
 
-	if (timeout())
-	{
-		status = ELM_TIMEOUT;
-		return status;
-	}
-	
-	if (nextIndex(payload, "UNABLETOCONNECT") >= 0)
-	{
-		status = ELM_UNABLE_TO_CONNECT;
-		return status;
-	}
+            payload[counter] = recChar;
+            counter++;
+        }
+    }
 
-	connected = true;
+    if (timeout()) {
+        status = ELM_TIMEOUT;
+        return status;
+    }
 
-	if (nextIndex(payload, "NODATA") >= 0)
-	{
-		status = ELM_NO_DATA;
-		return status;
-	}
+    if (nextIndex(payload, "UNABLETOCONNECT") >= 0) {
+        status = ELM_UNABLE_TO_CONNECT;
+        return status;
+    }
 
-	if (nextIndex(payload, "STOPPED") >= 0)
-	{
-		status = ELM_STOPPED;
-		return status;
-	}
+    connected = true;
 
-	if (nextIndex(payload, "ERROR") >= 0)
-	{
-		status = ELM_GENERAL_ERROR;
-		return status;
-	}
+    if (nextIndex(payload, "NODATA") >= 0) {
+        status = ELM_NO_DATA;
+        return status;
+    }
 
-	// keep track of how many bytes were received in
-	// the ELM327's response (not counting the
-	// end-marker '>') if a valid response is found
-	recBytes = counter;
+    if (nextIndex(payload, "STOPPED") >= 0) {
+        status = ELM_STOPPED;
+        return status;
+    }
 
-	status = ELM_SUCCESS;
-	return status;
+    if (nextIndex(payload, "ERROR") >= 0) {
+        status = ELM_GENERAL_ERROR;
+        return status;
+    }
+
+    // keep track of how many bytes were received in
+    // the ELM327's response (not counting the
+    // end-marker '>') if a valid response is found
+    recBytes = counter;
+
+    status = ELM_SUCCESS;
+    return status;
 }
-
-
 
 
 /*
@@ -620,72 +640,66 @@ int8_t ELM327::sendCommand(const char *cmd)
  -------
   * uint64_t - Query response value
 */
-uint64_t ELM327::findResponse()
-{
-	uint8_t firstDatum = 0;
-	uint8_t payBytes = 0;
-	char header[7] = { '\0' };
+uint64_t ELM327::findResponse() {
+    uint8_t firstDatum = 0;
+    uint8_t payBytes = 0;
+    char header[7] = {'\0'};
 
-	if (longQuery)
-	{
-		header[0] = query[0] + 4;
-		header[1] = query[1];
-		header[2] = query[2];
-		header[3] = query[3];
-		header[4] = query[4];
-		header[5] = query[5];
-	}
-	else
-	{
-		header[0] = query[0] + 4;
-		header[1] = query[1];
-		header[2] = query[2];
-		header[3] = query[3];
-	}
+    if (longQuery) {
+        header[0] = query[0] + 4;
+        header[1] = query[1];
+        header[2] = query[2];
+        header[3] = query[3];
+        header[4] = query[4];
+        header[5] = query[5];
+    } else {
+        header[0] = query[0] + 4;
+        header[1] = query[1];
+        header[2] = query[2];
+        header[3] = query[3];
+    }
 
-	int8_t firstHeadIndex  = nextIndex(payload, header);
-	int8_t secondHeadIndex = nextIndex(payload, header, 2);
+    int8_t firstHeadIndex = nextIndex(payload, header);
+    int8_t secondHeadIndex = nextIndex(payload, header, 2);
 
-	if (firstHeadIndex >= 0)
-	{
-		if (longQuery)
-			firstDatum = firstHeadIndex + 6;
-		else
-			firstDatum = firstHeadIndex + 4;
+    if (firstHeadIndex >= 0) {
+        if (longQuery)
+            firstDatum = firstHeadIndex + 6;
+        else
+            firstDatum = firstHeadIndex + 4;
 
-		// Some ELM327s (such as my own) respond with two
-		// "responses" per query. "payBytes" represents the
-		// correct number of bytes returned by the ELM327
-		// regardless of how many "responses" were returned
-		if (secondHeadIndex >= 0)
-			payBytes = secondHeadIndex - firstDatum;
-		else
-			payBytes = recBytes - firstDatum;
+        // Some ELM327s (such as my own) respond with two
+        // "responses" per query. "payBytes" represents the
+        // correct number of bytes returned by the ELM327
+        // regardless of how many "responses" were returned
+        if (secondHeadIndex >= 0)
+            payBytes = secondHeadIndex - firstDatum;
+        else
+            payBytes = recBytes - firstDatum;
 
 
-		uint64_t response = 0;
-		for(uint8_t i = 0; i < payBytes; i++)
-		{
-			uint8_t payloadIndex = firstDatum + i;
-			uint8_t bitsOffset = 4 * (payBytes - i - 1);
-			response = response | (ctoi(payload[payloadIndex]) << bitsOffset);
-		}
+        uint64_t response = 0;
+        for (uint8_t i = 0; i < payBytes; i++) {
+            uint8_t payloadIndex = firstDatum + i;
+            uint8_t bitsOffset = 4 * (payBytes - i - 1);
+            response = response | (ctoi(payload[payloadIndex]) << bitsOffset);
+        }
 
-		// It is usefull to have the response bytes
-		// broken-out because some PID algorithms (standard
-		// and custom) require special operations for each
-		// byte returned
-		responseByte_0 = response & 0xFF;
-		responseByte_1 = (response >> 8) & 0xFF;
-		responseByte_2 = (response >> 16) & 0xFF;
-		responseByte_3 = (response >> 24) & 0xFF;
-		responseByte_4 = (response >> 32) & 0xFF;
-		responseByte_5 = (response >> 40) & 0xFF;
-		responseByte_6 = (response >> 48) & 0xFF;
-		responseByte_7 = (response >> 56) & 0xFF;
-		
-		return response;
-	}
+        // It is usefull to have the response bytes
+        // broken-out because some PID algorithms (standard
+        // and custom) require special operations for each
+        // byte returned
+        responseByte_0 = response & 0xFF;
+        responseByte_1 = (response >> 8) & 0xFF;
+        responseByte_2 = (response >> 16) & 0xFF;
+        responseByte_3 = (response >> 24) & 0xFF;
+        responseByte_4 = (response >> 32) & 0xFF;
+        responseByte_5 = (response >> 40) & 0xFF;
+        responseByte_6 = (response >> 48) & 0xFF;
+        responseByte_7 = (response >> 56) & 0xFF;
 
-	return 0;
+        return response;
+    }
+
+    return 0;
 }
